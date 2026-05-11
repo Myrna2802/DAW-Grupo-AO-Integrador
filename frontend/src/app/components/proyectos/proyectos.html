@@ -1,0 +1,50 @@
+<div class="container">
+  <div class="header">
+    <h2>Proyectos</h2>
+    <div class="header-actions">
+      <button (click)="irAClientes()">Clientes</button>
+      <button (click)="abrirFormulario()">+ Nuevo proyecto</button>
+      <button class="btn-salir" (click)="cerrarSesion()">Cerrar sesión</button>
+    </div>
+  </div>
+
+  <div class="formulario" *ngIf="mostrarFormulario">
+    <h3>{{ editando ? 'Editar proyecto' : 'Nuevo proyecto' }}</h3>
+    <input type="text" [(ngModel)]="nombre" placeholder="Nombre del proyecto" />
+    <select [(ngModel)]="clienteId">
+      <option [ngValue]="null">Sin cliente (proyecto interno)</option>
+      <option *ngFor="let c of clientes" [ngValue]="c.id">{{ c.nombre }}</option>
+    </select>
+    <select [(ngModel)]="estado" *ngIf="editando">
+      <option value="ACTIVO">Activo</option>
+      <option value="FINALIZADO">Finalizado</option>
+      <option value="BAJA">Baja</option>
+    </select>
+    <div class="form-actions">
+      <button (click)="guardar()">Guardar</button>
+      <button class="btn-cancelar" (click)="mostrarFormulario = false">Cancelar</button>
+    </div>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>Cliente</th>
+        <th>Estado</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let p of proyectos">
+        <td>{{ p.nombre }}</td>
+        <td>{{ p.cliente?.nombre || 'Interno' }}</td>
+        <td><span class="badge" [class]="p.estado.toLowerCase()">{{ p.estado }}</span></td>
+        <td>
+          <button (click)="editar(p)">Editar</button>
+          <button (click)="verTareas(p.id)">Ver tareas</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

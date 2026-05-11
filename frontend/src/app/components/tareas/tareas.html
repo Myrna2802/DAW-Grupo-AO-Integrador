@@ -1,0 +1,43 @@
+<div class="container">
+  <div class="header">
+    <h2>Tareas del proyecto</h2>
+    <div class="header-actions">
+      <button (click)="volver()">← Volver a proyectos</button>
+      <button (click)="abrirFormulario()">+ Nueva tarea</button>
+    </div>
+  </div>
+
+  <div class="formulario" *ngIf="mostrarFormulario">
+    <h3>{{ editando ? 'Editar tarea' : 'Nueva tarea' }}</h3>
+    <input type="text" [(ngModel)]="descripcion" placeholder="Descripción de la tarea" />
+    <select [(ngModel)]="estado" *ngIf="editando">
+      <option value="PENDIENTE">Pendiente</option>
+      <option value="FINALIZADA">Finalizada</option>
+      <option value="BAJA">Baja</option>
+    </select>
+    <div class="form-actions">
+      <button (click)="guardar()">Guardar</button>
+      <button class="btn-cancelar" (click)="mostrarFormulario = false">Cancelar</button>
+    </div>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Descripción</th>
+        <th>Estado</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let t of tareas">
+        <td>{{ t.descripcion }}</td>
+        <td><span class="badge" [class]="t.estado.toLowerCase()">{{ t.estado }}</span></td>
+        <td>
+          <button (click)="editar(t)">Editar</button>
+          <button class="btn-eliminar" (click)="eliminar(t.id)">Eliminar</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

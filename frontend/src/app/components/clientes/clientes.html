@@ -1,0 +1,41 @@
+<div class="container">
+  <div class="header">
+    <h2>Clientes</h2>
+    <div class="header-actions">
+      <button (click)="volver()">← Volver a proyectos</button>
+      <button (click)="abrirFormulario()">+ Nuevo cliente</button>
+    </div>
+  </div>
+
+  <div class="formulario" *ngIf="mostrarFormulario">
+    <h3>{{ editando ? 'Editar cliente' : 'Nuevo cliente' }}</h3>
+    <input type="text" [(ngModel)]="nombre" placeholder="Nombre del cliente" />
+    <select [(ngModel)]="estado" *ngIf="editando">
+      <option value="ACTIVO">Activo</option>
+      <option value="BAJA">Baja</option>
+    </select>
+    <div class="form-actions">
+      <button (click)="guardar()">Guardar</button>
+      <button class="btn-cancelar" (click)="mostrarFormulario = false">Cancelar</button>
+    </div>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>Estado</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let c of clientes">
+        <td>{{ c.nombre }}</td>
+        <td><span class="badge" [class]="c.estado.toLowerCase()">{{ c.estado }}</span></td>
+        <td>
+          <button (click)="editar(c)">Editar</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
