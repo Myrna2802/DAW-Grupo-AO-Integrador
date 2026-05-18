@@ -1,43 +1,205 @@
-<div class="container">
-  <div class="header">
-    <h2>Tareas del proyecto</h2>
-    <div class="header-actions">
-      <button (click)="volver()">← Volver a proyectos</button>
-      <button (click)="abrirFormulario()">+ Nueva tarea</button>
-    </div>
-  </div>
+<div class="dashboard">
 
-  <div class="formulario" *ngIf="mostrarFormulario">
-    <h3>{{ editando ? 'Editar tarea' : 'Nueva tarea' }}</h3>
-    <input type="text" [(ngModel)]="descripcion" placeholder="Descripción de la tarea" />
-    <select [(ngModel)]="estado" *ngIf="editando">
-      <option value="PENDIENTE">Pendiente</option>
-      <option value="FINALIZADA">Finalizada</option>
-      <option value="BAJA">Baja</option>
-    </select>
-    <div class="form-actions">
-      <button (click)="guardar()">Guardar</button>
-      <button class="btn-cancelar" (click)="mostrarFormulario = false">Cancelar</button>
-    </div>
-  </div>
 
-  <table>
-    <thead>
-      <tr>
-        <th>Descripción</th>
-        <th>Estado</th>
-        <th>Acciones</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let t of tareas">
-        <td>{{ t.descripcion }}</td>
-        <td><span class="badge" [class]="t.estado.toLowerCase()">{{ t.estado }}</span></td>
-        <td>
-          <button (click)="editar(t)">Editar</button>
-          <button class="btn-eliminar" (click)="eliminar(t.id)">Eliminar</button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+  <aside class="sidebar">
+
+    <div class="logo">
+
+      <div class="logo-icon">
+        📁
+      </div>
+
+      <span>Gestor de Proyectos</span>
+
+    </div>
+
+    <nav class="menu">
+
+      <button
+        class="menu-item"
+        (click)="volver()"
+      >
+        📁 Proyectos
+      </button>
+
+      <button class="menu-item">
+        👥 Clientes
+      </button>
+
+    </nav>
+
+    <div class="sidebar-footer">
+
+      <button
+        class="logout-btn"
+        (click)="cerrarSesion()"
+        >
+       🚪 Cerrar sesión
+      </button>
+
+    </div>
+
+  </aside>
+
+
+  <main class="content">
+
+
+    <div class="topbar">
+
+      <div>
+
+        <h1>Tareas</h1>
+
+        <p>
+          Gestioná y consultá todas las tareas
+        </p>
+
+      </div>
+
+      <div class="topbar-actions">
+
+        <button
+          class="secondary-btn"
+          (click)="volver()"
+        >
+          ← Ver proyecto
+        </button>
+
+        <button
+          *ngIf="puedeEditar()"
+          class="primary-btn"
+          (click)="abrirFormulario()"
+        >
+          + Nueva tarea
+        </button>
+
+      </div>
+
+    </div>
+
+
+    <div
+      class="task-form"
+      *ngIf="mostrarFormulario"
+    >
+
+      <h2>
+        {{ editando ? 'Editar tarea' : 'Nueva tarea' }}
+      </h2>
+
+      <textarea
+        [(ngModel)]="descripcion"
+        placeholder="Descripción de la tarea"
+        rows="4"
+      ></textarea>
+
+      <select [(ngModel)]="estado">
+
+        <option value="PENDIENTE">
+          Pendiente
+        </option>
+
+        <option value="FINALIZADA">
+          Finalizada
+        </option>
+
+        <option value="BAJA">
+          Baja
+        </option>
+
+      </select>
+
+      <div class="form-actions">
+
+        <button
+          class="primary-btn"
+          (click)="guardar()"
+        >
+          Guardar
+        </button>
+
+        <button
+          class="cancel-btn"
+          (click)="mostrarFormulario = false"
+        >
+          Cancelar
+        </button>
+
+      </div>
+
+    </div>
+
+
+    <div class="table-card">
+
+      <table>
+
+        <thead>
+
+          <tr>
+            <th>Descripción</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+          </tr>
+
+        </thead>
+
+        <tbody>
+
+          <tr *ngFor="let t of tareas">
+
+            <td>
+
+              <div class="task-description">
+                ✅ {{ t.descripcion }}
+              </div>
+
+            </td>
+
+            <td>
+
+              <span
+                class="status"
+                [class]="t.estado.toLowerCase()"
+              >
+                {{ t.estado }}
+              </span>
+
+            </td>
+
+            <td>
+
+              <div class="actions">
+
+                <button
+                  *ngIf="puedeEditar()"
+                  class="edit-btn"
+                  (click)="editar(t)"
+                >
+                  Editar
+                </button>
+
+                <button
+                  *ngIf="puedeEditar()"
+                  class="delete-btn"
+                  (click)="eliminar(t.id)"
+                >
+                  Eliminar
+                </button>
+
+              </div>
+
+            </td>
+
+          </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </main>
+
 </div>

@@ -1,41 +1,192 @@
-<div class="container">
-  <div class="header">
-    <h2>Clientes</h2>
-    <div class="header-actions">
-      <button (click)="volver()">← Volver a proyectos</button>
-      <button (click)="abrirFormulario()">+ Nuevo cliente</button>
-    </div>
-  </div>
+<div class="dashboard">
 
-  <div class="formulario" *ngIf="mostrarFormulario">
-    <h3>{{ editando ? 'Editar cliente' : 'Nuevo cliente' }}</h3>
-    <input type="text" [(ngModel)]="nombre" placeholder="Nombre del cliente" />
-    <select [(ngModel)]="estado" *ngIf="editando">
-      <option value="ACTIVO">Activo</option>
-      <option value="BAJA">Baja</option>
-    </select>
-    <div class="form-actions">
-      <button (click)="guardar()">Guardar</button>
-      <button class="btn-cancelar" (click)="mostrarFormulario = false">Cancelar</button>
-    </div>
-  </div>
 
-  <table>
-    <thead>
-      <tr>
-        <th>Nombre</th>
-        <th>Estado</th>
-        <th>Acciones</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let c of clientes">
-        <td>{{ c.nombre }}</td>
-        <td><span class="badge" [class]="c.estado.toLowerCase()">{{ c.estado }}</span></td>
-        <td>
-          <button (click)="editar(c)">Editar</button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+  <aside class="sidebar">
+
+    <div class="logo">
+      <div class="logo-icon">📁</div>
+      <span>Gestor de Proyectos</span>
+    </div>
+
+    <nav class="menu">
+
+      <button
+        class="menu-item"
+        (click)="volver()"
+      >
+        📁 Proyectos
+      </button>
+
+      <button class="menu-item active">
+        👥 Clientes
+      </button>
+
+    </nav>
+
+    <div class="sidebar-footer">
+
+      <button
+        class="logout-btn"
+        (click)="cerrarSesion()"
+        >
+       🚪 Cerrar sesión
+      </button>
+
+    </div>
+
+  </aside>
+
+
+  <main class="content">
+
+
+    <div class="topbar">
+
+      <div>
+        <h1>Clientes</h1>
+
+        <p>
+          Gestioná y consultá todos los clientes
+        </p>
+      </div>
+
+      <div class="topbar-actions">
+
+        <button
+          class="secondary-btn"
+          (click)="volver()"
+        >
+          ← Volver a proyectos
+        </button>
+
+        <button
+          *ngIf="puedeCrearCliente()"
+          class="primary-btn"
+          (click)="abrirFormulario()"
+        >
+          + Nuevo cliente
+        </button>
+
+      </div>
+
+    </div>
+
+
+    <div
+      class="client-form"
+      *ngIf="mostrarFormulario"
+    >
+
+      <h2>
+        {{ editando ? 'Editar cliente' : 'Nuevo cliente' }}
+      </h2>
+
+      <input
+        type="text"
+        [(ngModel)]="nombre"
+        placeholder="Nombre del cliente"
+      />
+
+      <select
+        [(ngModel)]="estado"
+        *ngIf="editando"
+      >
+        <option value="ACTIVO">
+          Activo
+        </option>
+
+        <option value="BAJA">
+          Baja
+        </option>
+
+      </select>
+
+      <div class="form-actions">
+
+        <button
+          class="primary-btn"
+          (click)="guardar()"
+        >
+          Guardar
+        </button>
+
+        <button
+          class="cancel-btn"
+          (click)="mostrarFormulario = false"
+        >
+          Cancelar
+        </button>
+
+      </div>
+
+    </div>
+
+
+    <div class="table-card">
+
+      <table>
+
+        <thead>
+
+          <tr>
+            <th>Nombre</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+          </tr>
+
+        </thead>
+
+        <tbody>
+
+          <tr *ngFor="let c of clientes">
+
+            <td>
+
+              <div class="client-name">
+                👥 {{ c.nombre }}
+              </div>
+
+            </td>
+
+            <td>
+
+              <span
+                class="status"
+                [class]="c.estado.toLowerCase()"
+              >
+                {{ c.estado }}
+              </span>
+
+            </td>
+
+            <td>
+
+              <div class="actions">
+
+                <button class="view-btn">
+                  Ver
+                </button>
+
+                <button
+                  *ngIf="puedeEditarCliente()"
+                  class="edit-btn"
+                  (click)="editar(c)"
+                >
+                  Editar
+                </button>
+
+              </div>
+
+            </td>
+
+          </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </main>
+
 </div>

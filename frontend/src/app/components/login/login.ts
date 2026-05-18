@@ -23,6 +23,7 @@ export class LoginComponent {
     this.authService.login(this.nombre, this.clave).subscribe({
       next: (res) => {
         this.authService.guardarToken(res.access_token);
+        this.authService.guardarUsuario(res.usuario);
         this.router.navigate(['/proyectos']);
       },
       error: () => {
