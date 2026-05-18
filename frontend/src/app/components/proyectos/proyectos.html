@@ -1,50 +1,205 @@
-<div class="container">
-  <div class="header">
-    <h2>Proyectos</h2>
-    <div class="header-actions">
-      <button (click)="irAClientes()">Clientes</button>
-      <button (click)="abrirFormulario()">+ Nuevo proyecto</button>
-      <button class="btn-salir" (click)="cerrarSesion()">Cerrar sesión</button>
-    </div>
-  </div>
+<div class="dashboard">
 
-  <div class="formulario" *ngIf="mostrarFormulario">
-    <h3>{{ editando ? 'Editar proyecto' : 'Nuevo proyecto' }}</h3>
-    <input type="text" [(ngModel)]="nombre" placeholder="Nombre del proyecto" />
-    <select [(ngModel)]="clienteId">
-      <option [ngValue]="null">Sin cliente (proyecto interno)</option>
-      <option *ngFor="let c of clientes" [ngValue]="c.id">{{ c.nombre }}</option>
-    </select>
-    <select [(ngModel)]="estado" *ngIf="editando">
-      <option value="ACTIVO">Activo</option>
-      <option value="FINALIZADO">Finalizado</option>
-      <option value="BAJA">Baja</option>
-    </select>
-    <div class="form-actions">
-      <button (click)="guardar()">Guardar</button>
-      <button class="btn-cancelar" (click)="mostrarFormulario = false">Cancelar</button>
-    </div>
-  </div>
+  <aside class="sidebar">
 
-  <table>
-    <thead>
-      <tr>
-        <th>Nombre</th>
-        <th>Cliente</th>
-        <th>Estado</th>
-        <th>Acciones</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let p of proyectos">
-        <td>{{ p.nombre }}</td>
-        <td>{{ p.cliente?.nombre || 'Interno' }}</td>
-        <td><span class="badge" [class]="p.estado.toLowerCase()">{{ p.estado }}</span></td>
-        <td>
-          <button (click)="editar(p)">Editar</button>
-          <button (click)="verTareas(p.id)">Ver tareas</button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+    <div class="logo">
+      <div class="logo-icon">📁</div>
+      <span>Gestor de Proyectos</span>
+    </div>
+
+    <nav class="menu">
+
+      <button class="menu-item active">
+        📁 Proyectos
+      </button>
+
+      <button
+        class="menu-item"
+        (click)="irAClientes()"
+      >
+        👥 Clientes
+      </button>
+
+    </nav>
+
+    <div class="sidebar-footer">
+
+      <button
+        class="logout-btn"
+        (click)="cerrarSesion()"
+      >
+        🚪 Cerrar sesión
+      </button>
+
+    </div>
+
+  </aside>
+
+  <main class="content">
+
+    <div class="topbar">
+
+      <div>
+        <h1>Proyectos</h1>
+
+        <p>
+          Gestioná y consultá todos los proyectos
+        </p>
+      </div>
+
+      <div class="topbar-actions">
+
+        <button
+          class="secondary-btn"
+          (click)="irAClientes()"
+        >
+          Ver clientes
+        </button>
+
+        <button
+          *ngIf="puedeCrearProyecto()"
+          class="primary-btn"
+          (click)="abrirFormulario()"
+        >
+          + Nuevo proyecto
+        </button>
+
+      </div>
+
+    </div>
+
+    <div
+      class="project-form"
+      *ngIf="mostrarFormulario"
+    >
+
+      <h2>
+        {{ editando ? 'Editar proyecto' : 'Nuevo proyecto' }}
+      </h2>
+
+      <input
+        type="text"
+        [(ngModel)]="nombre"
+        placeholder="Nombre del proyecto"
+      />
+
+      <select [(ngModel)]="clienteId">
+
+        <option [ngValue]="null">
+          Sin cliente
+        </option>
+
+        <option
+          *ngFor="let c of clientes"
+          [ngValue]="c.id"
+        >
+          {{ c.nombre }}
+        </option>
+
+      </select>
+
+      <select
+        [(ngModel)]="estado"
+        *ngIf="editando"
+      >
+        <option value="ACTIVO">Activo</option>
+        <option value="FINALIZADO">Finalizado</option>
+        <option value="BAJA">Baja</option>
+      </select>
+
+      <div class="form-actions">
+
+        <button
+          class="primary-btn"
+          (click)="guardar()"
+        >
+          Guardar
+        </button>
+
+        <button
+          class="cancel-btn"
+          (click)="mostrarFormulario = false"
+        >
+          Cancelar
+        </button>
+
+      </div>
+
+    </div>
+
+    <div class="table-card">
+
+      <table>
+
+        <thead>
+
+          <tr>
+            <th>Nombre</th>
+            <th>Cliente</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+          </tr>
+
+        </thead>
+
+        <tbody>
+
+          <tr *ngFor="let p of proyectos">
+
+            <td>
+
+              <div class="project-name">
+                📁 {{ p.nombre }}
+              </div>
+
+            </td>
+
+            <td>
+              {{ p.cliente?.nombre || 'Interno' }}
+            </td>
+
+            <td>
+
+              <span
+                class="status"
+                [class]="p.estado.toLowerCase()"
+              >
+                {{ p.estado }}
+              </span>
+
+            </td>
+
+            <td>
+
+              <div class="actions">
+
+                <button
+                  class="view-btn"
+                  (click)="verTareas(p.id)"
+                >
+                  Ver tareas
+                </button>
+
+                <button
+                  *ngIf="puedeEditarProyecto()"
+                  class="edit-btn"
+                  (click)="editar(p)"
+                >
+                  Editar
+                </button>
+
+              </div>
+
+            </td>
+
+          </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </main>
+
 </div>

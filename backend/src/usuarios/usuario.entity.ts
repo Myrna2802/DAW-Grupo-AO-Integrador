@@ -4,7 +4,11 @@ export enum EstadoUsuario {
   ACTIVO = 'ACTIVO',
   BAJA = 'BAJA',
 }
-
+export enum RolUsuario {
+  ADMIN = 'ADMIN',
+  LIDER = 'LIDER',
+  COLABORADOR = 'COLABORADOR',
+}
 @Entity('usuarios')
 export class Usuario {
   @PrimaryGeneratedColumn()
@@ -18,4 +22,13 @@ export class Usuario {
 
   @Column({ type: 'enum', enum: EstadoUsuario })
   estado!: EstadoUsuario;
+
+  @Column({
+  type: 'enum',
+  enum: RolUsuario,
+  default: RolUsuario.COLABORADOR,
+})
+rol!: RolUsuario;
+
+  
 }
