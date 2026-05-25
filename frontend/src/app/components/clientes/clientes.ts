@@ -179,6 +179,18 @@ export class Clientes implements OnInit {
 
   }
 
+  cancelar() {
+
+  this.mostrarFormulario = false;
+
+  this.mensajeError = '';
+  this.mensajeExito = '';
+
+  this.nombre = '';
+  this.estado = 'ACTIVO';
+
+  }
+
   volver() {
 
     this.router.navigate(['/proyectos']);
