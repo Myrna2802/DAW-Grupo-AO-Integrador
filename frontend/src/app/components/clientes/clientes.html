@@ -1,6 +1,5 @@
 <div class="dashboard">
 
-
   <aside class="sidebar">
 
     <div class="logo">
@@ -28,17 +27,15 @@
       <button
         class="logout-btn"
         (click)="cerrarSesion()"
-        >
-       🚪 Cerrar sesión
+      >
+        🚪 Cerrar sesión
       </button>
 
     </div>
 
   </aside>
 
-
   <main class="content">
-
 
     <div class="topbar">
 
@@ -71,6 +68,19 @@
 
     </div>
 
+    <div
+      class="mensaje error"
+      *ngIf="mensajeError"
+    >
+      {{ mensajeError }}
+    </div>
+
+    <div
+      class="mensaje exito"
+      *ngIf="mensajeExito"
+    >
+      {{ mensajeExito }}
+    </div>
 
     <div
       class="client-form"
@@ -91,6 +101,7 @@
         [(ngModel)]="estado"
         *ngIf="editando"
       >
+
         <option value="ACTIVO">
           Activo
         </option>
@@ -121,7 +132,6 @@
 
     </div>
 
-
     <div class="table-card">
 
       <table>
@@ -131,6 +141,7 @@
           <tr>
             <th>Nombre</th>
             <th>Estado</th>
+            <th>Proyectos</th>
             <th>Acciones</th>
           </tr>
 
@@ -138,7 +149,7 @@
 
         <tbody>
 
-          <tr *ngFor="let c of clientes">
+          <tr *ngFor="let c of clientesFiltrados()">
 
             <td>
 
@@ -155,6 +166,14 @@
                 [class]="c.estado.toLowerCase()"
               >
                 {{ c.estado }}
+              </span>
+
+            </td>
+
+            <td>
+
+              <span class="project-count">
+                📁 {{ c.cantidadProyectos }}
               </span>
 
             </td>

@@ -31,6 +31,20 @@ export class Clientes implements OnInit {
   nombre = '';
   estado = 'ACTIVO';
 
+  busqueda = '';
+
+  mensajeError = '';
+  mensajeExito = '';
+
+  clientesFiltrados() {
+
+    return this.clientes.filter(c =>
+      c.nombre.toLowerCase()
+        .includes(this.busqueda.toLowerCase())
+    );
+
+  }
+
   constructor(
     private api: ApiService,
     private router: Router,
@@ -74,6 +88,9 @@ export class Clientes implements OnInit {
     this.nombre = '';
     this.estado = 'ACTIVO';
 
+    this.mensajeError = '';
+    this.mensajeExito = '';
+
   }
 
   editar(cliente: any) {
@@ -86,9 +103,15 @@ export class Clientes implements OnInit {
     this.nombre = cliente.nombre;
     this.estado = cliente.estado;
 
+    this.mensajeError = '';
+    this.mensajeExito = '';
+
   }
 
   guardar() {
+
+    this.mensajeError = '';
+    this.mensajeExito = '';
 
     if (this.editando) {
 
@@ -96,22 +119,59 @@ export class Clientes implements OnInit {
         this.clienteSeleccionado.id,
         this.nombre,
         this.estado
-      ).subscribe(() => {
+      ).subscribe({
 
-        this.mostrarFormulario = false;
+        next: () => {
 
-        this.cargarClientes();
+          this.mensajeExito =
+            'Cliente actualizado correctamente';
+
+          this.cargarClientes();
+
+          this.cdr.detectChanges();
+
+        },
+
+        error: (err) => {
+
+          console.log(err);
+
+          this.mensajeError =
+            err.error.message ||
+            'No se pudo actualizar el cliente';
+
+          this.cdr.detectChanges();
+
+        }
 
       });
 
     } else {
 
       this.api.crearCliente(this.nombre)
-        .subscribe(() => {
+        .subscribe({
 
-          this.mostrarFormulario = false;
+          next: () => {
 
-          this.cargarClientes();
+            this.mensajeExito =
+              'Cliente creado correctamente';
+
+            this.cargarClientes();
+
+            this.cdr.detectChanges();
+
+          },
+
+          error: (err) => {
+
+            console.log(err);
+
+            this.mensajeError =
+              'No se pudo crear el cliente';
+
+            this.cdr.detectChanges();
+
+          }
 
         });
 
