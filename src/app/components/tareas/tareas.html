@@ -1,0 +1,205 @@
+<div class="dashboard">
+
+
+  <aside class="sidebar">
+
+    <div class="logo">
+
+      <div class="logo-icon">
+        📁
+      </div>
+
+      <span>Gestor de Proyectos</span>
+
+    </div>
+
+    <nav class="menu">
+
+      <button
+        class="menu-item"
+        (click)="volver()"
+      >
+        📁 Proyectos
+      </button>
+
+      <button class="menu-item">
+        👥 Clientes
+      </button>
+
+    </nav>
+
+    <div class="sidebar-footer">
+
+      <button
+        class="logout-btn"
+        (click)="cerrarSesion()"
+        >
+       🚪 Cerrar sesión
+      </button>
+
+    </div>
+
+  </aside>
+
+
+  <main class="content">
+
+
+    <div class="topbar">
+
+      <div>
+
+        <h1>Tareas</h1>
+
+        <p>
+          Gestioná y consultá todas las tareas
+        </p>
+
+      </div>
+
+      <div class="topbar-actions">
+
+        <button
+          class="secondary-btn"
+          (click)="volver()"
+        >
+          ← Ver proyecto
+        </button>
+
+        <button
+          *ngIf="puedeEditar()"
+          class="primary-btn"
+          (click)="abrirFormulario()"
+        >
+          + Nueva tarea
+        </button>
+
+      </div>
+
+    </div>
+
+
+    <div
+      class="task-form"
+      *ngIf="mostrarFormulario"
+    >
+
+      <h2>
+        {{ editando ? 'Editar tarea' : 'Nueva tarea' }}
+      </h2>
+
+      <textarea
+        [(ngModel)]="descripcion"
+        placeholder="Descripción de la tarea"
+        rows="4"
+      ></textarea>
+
+      <select [(ngModel)]="estado">
+
+        <option value="PENDIENTE">
+          Pendiente
+        </option>
+
+        <option value="FINALIZADA">
+          Finalizada
+        </option>
+
+        <option value="BAJA">
+          Baja
+        </option>
+
+      </select>
+
+      <div class="form-actions">
+
+        <button
+          class="primary-btn"
+          (click)="guardar()"
+        >
+          Guardar
+        </button>
+
+        <button
+          class="cancel-btn"
+          (click)="mostrarFormulario = false"
+        >
+          Cancelar
+        </button>
+
+      </div>
+
+    </div>
+
+
+    <div class="table-card">
+
+      <table>
+
+        <thead>
+
+          <tr>
+            <th>Descripción</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+          </tr>
+
+        </thead>
+
+        <tbody>
+
+          <tr *ngFor="let t of tareas">
+
+            <td>
+
+              <div class="task-description">
+                ✅ {{ t.descripcion }}
+              </div>
+
+            </td>
+
+            <td>
+
+              <span
+                class="status"
+                [class]="t.estado.toLowerCase()"
+              >
+                {{ t.estado }}
+              </span>
+
+            </td>
+
+            <td>
+
+              <div class="actions">
+
+                <button
+                  *ngIf="puedeEditar()"
+                  class="edit-btn"
+                  (click)="editar(t)"
+                >
+                  Editar
+                </button>
+
+                <button
+                  *ngIf="puedeEditar()"
+                  class="delete-btn"
+                  (click)="eliminar(t.id)"
+                >
+                  Eliminar
+                </button>
+
+              </div>
+
+            </td>
+
+          </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </main>
+
+</div>
