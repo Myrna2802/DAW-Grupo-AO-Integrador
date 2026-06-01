@@ -1,9 +1,14 @@
 import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
+
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
+
 import { UsuariosModule } from '../usuarios/usuarios.module';
+
+import { JwtStrategy } from './jwt.strategy';
+import { RolesGuard } from './roles.guard';
 
 @Module({
   imports: [
@@ -11,10 +16,20 @@ import { UsuariosModule } from '../usuarios/usuarios.module';
     PassportModule,
     JwtModule.register({
       secret: 'secreto_jwt_integrador',
-      signOptions: { expiresIn: '8h' },
+      signOptions: {
+        expiresIn: '8h',
+      },
     }),
   ],
-  providers: [AuthService],
-  controllers: [AuthController],
+
+  providers: [
+    AuthService,
+    JwtStrategy,
+    RolesGuard,
+  ],
+
+  controllers: [
+    AuthController,
+  ],
 })
 export class AuthModule {}
