@@ -18,7 +18,6 @@ import { AuthService } from '../../services/auth';
   templateUrl: './clientes.html',
   styleUrl: './clientes.css'
 })
-
 export class Clientes implements OnInit {
 
   clientes: any[] = [];
@@ -31,6 +30,17 @@ export class Clientes implements OnInit {
   nombre = '';
   estado = 'ACTIVO';
 
+  busqueda = '';
+
+  mensajeError = '';
+  mensajeExito = '';
+
+  clientesFiltrados() {
+    return this.clientes.filter(c =>
+      c.nombre.toLowerCase().includes(this.busqueda.toLowerCase())
+    );
+  }
+
   constructor(
     private api: ApiService,
     private router: Router,
@@ -39,108 +49,108 @@ export class Clientes implements OnInit {
   ) {}
 
   ngOnInit() {
-
     this.cargarClientes();
-
   }
 
   cargarClientes() {
-
     this.api.getClientes().subscribe({
-
       next: (c) => {
-
         this.clientes = c;
-
         this.cdr.detectChanges();
-
       },
-
       error: (err) => {
-
         console.log('ERROR CLIENTES:', err);
-
       }
-
     });
-
   }
 
   abrirFormulario() {
-
     this.mostrarFormulario = true;
     this.editando = false;
-
     this.nombre = '';
     this.estado = 'ACTIVO';
-
+    this.mensajeError = '';
+    this.mensajeExito = '';
   }
 
   editar(cliente: any) {
-
     this.mostrarFormulario = true;
     this.editando = true;
-
     this.clienteSeleccionado = cliente;
-
     this.nombre = cliente.nombre;
     this.estado = cliente.estado;
-
+    this.mensajeError = '';
+    this.mensajeExito = '';
   }
 
   guardar() {
+    this.mensajeError = '';
+    this.mensajeExito = '';
 
     if (this.editando) {
-
       this.api.actualizarCliente(
         this.clienteSeleccionado.id,
         this.nombre,
         this.estado
-      ).subscribe(() => {
-
-        this.mostrarFormulario = false;
-
-        this.cargarClientes();
-
-      });
-
-    } else {
-
-      this.api.crearCliente(this.nombre)
-        .subscribe(() => {
-
-          this.mostrarFormulario = false;
-
+      ).subscribe({
+        next: () => {
+          this.mensajeExito = 'Cliente actualizado correctamente';
           this.cargarClientes();
-
-        });
-
+          this.mostrarFormulario = false;
+          this.editando = false;
+          this.clienteSeleccionado = null;
+          this.nombre = '';
+          this.estado = 'ACTIVO';
+          this.cdr.detectChanges();
+        },
+        error: (err) => {
+          console.log(err);
+          this.mensajeError = err.error.message || 'No se pudo actualizar el cliente';
+          this.cdr.detectChanges();
+        }
+      });
+    } else {
+      this.api.crearCliente(this.nombre).subscribe({
+        next: () => {
+          this.mensajeExito = 'Cliente creado correctamente';
+          this.cargarClientes();
+          this.mostrarFormulario = false;
+          this.editando = false;
+          this.clienteSeleccionado = null;
+          this.nombre = '';
+          this.estado = 'ACTIVO';
+          this.cdr.detectChanges();
+        },
+        error: (err) => {
+          console.log(err);
+          this.mensajeError = 'No se pudo crear el cliente';
+          this.cdr.detectChanges();
+        }
+      });
     }
+  }
 
+  cancelar() {
+    this.mostrarFormulario = false;
+    this.mensajeError = '';
+    this.mensajeExito = '';
+    this.nombre = '';
+    this.estado = 'ACTIVO';
   }
 
   volver() {
-
     this.router.navigate(['/proyectos']);
-
   }
 
   cerrarSesion() {
-
     this.authService.cerrarSesion();
-
   }
 
   puedeCrearCliente(): boolean {
-
     return this.authService.esAdmin();
-
   }
 
   puedeEditarCliente(): boolean {
-
     return this.authService.esAdmin();
-
   }
-
 }
