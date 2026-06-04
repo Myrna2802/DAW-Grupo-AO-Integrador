@@ -1,24 +1,16 @@
-import {
-  Component,
-  OnInit,
-  ChangeDetectorRef
-} from '@angular/core';
-
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-
 import { ApiService } from '../../services/api';
 import { AuthService } from '../../services/auth';
 
 @Component({
   selector: 'app-proyectos',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [FormsModule],
   templateUrl: './proyectos.html',
   styleUrl: './proyectos.css'
 })
-
 export class Proyectos implements OnInit {
 
   proyectos: any[] = [];
@@ -26,12 +18,14 @@ export class Proyectos implements OnInit {
 
   mostrarFormulario = false;
   editando = false;
-
   proyectoSeleccionado: any = null;
 
   nombre = '';
   clienteId: number | null = null;
   estado = 'ACTIVO';
+
+  busqueda = '';
+  filtroEstado = '';
 
   constructor(
     private api: ApiService,
@@ -46,134 +40,91 @@ export class Proyectos implements OnInit {
   }
 
   cargarProyectos() {
-
     this.api.getProyectos().subscribe({
-
       next: (p) => {
-
         this.proyectos = p;
         this.cdr.detectChanges();
-
       },
-
-
+      error: (err) => console.log('Error:', err)
     });
-
   }
 
   cargarClientes() {
-
     this.api.getClientes().subscribe({
-
       next: (c) => {
-
-        this.clientes = c.filter(
-          (x: any) => x.estado === 'ACTIVO'
-        );
-
+        this.clientes = c.filter((x: any) => x.estado === 'ACTIVO');
       },
-
+      error: (err) => console.log('Error:', err)
     });
+  }
 
+  get proyectosFiltrados() {
+    return this.proyectos.filter(p => {
+      const coincideNombre = p.nombre.toLowerCase().includes(this.busqueda.toLowerCase());
+      const coincideEstado = this.filtroEstado ? p.estado === this.filtroEstado : true;
+      return coincideNombre && coincideEstado;
+    });
   }
 
   abrirFormulario() {
-
     this.mostrarFormulario = true;
     this.editando = false;
-
     this.nombre = '';
     this.clienteId = null;
     this.estado = 'ACTIVO';
-
   }
 
   editar(proyecto: any) {
-
     this.mostrarFormulario = true;
     this.editando = true;
-
     this.proyectoSeleccionado = proyecto;
-
     this.nombre = proyecto.nombre;
     this.estado = proyecto.estado;
-
     this.clienteId = proyecto.cliente?.id || null;
-
   }
 
   guardar() {
-
     if (this.editando) {
-
       this.api.actualizarProyecto(
         this.proyectoSeleccionado.id,
         this.nombre,
         this.estado,
         this.clienteId || undefined
       ).subscribe(() => {
-
         this.mostrarFormulario = false;
-
         this.cargarProyectos();
-
       });
-
     } else {
-
-      this.api.crearProyecto(
-        this.nombre,
-        this.clienteId || undefined
-      ).subscribe(() => {
-
-        this.mostrarFormulario = false;
-
-        this.cargarProyectos();
-
-      });
-
+      this.api.crearProyecto(this.nombre, this.clienteId || undefined)
+        .subscribe(() => {
+          this.mostrarFormulario = false;
+          this.cargarProyectos();
+        });
     }
-
   }
 
   verTareas(id: number) {
-
     this.router.navigate(['/tareas', id]);
-
   }
 
   irAClientes() {
-
     this.router.navigate(['/clientes']);
-
   }
 
   cerrarSesion() {
-
     this.authService.cerrarSesion();
-
     this.router.navigate(['/login']);
-
   }
 
   puedeCrearProyecto(): boolean {
-
-    return this.authService.esAdmin()
-      || this.authService.esLider();
-
+    return this.authService.esAdmin() || this.authService.esLider();
   }
 
   puedeEditarProyecto(): boolean {
-
-    return this.authService.esAdmin()
-      || this.authService.esLider();
-
+    return this.authService.esAdmin() || this.authService.esLider();
   }
 
   puedeDarBajaProyecto(): boolean {
-
     return this.authService.esAdmin();
-
   }
-
 }
