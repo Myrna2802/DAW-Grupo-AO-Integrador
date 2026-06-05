@@ -24,6 +24,7 @@ export class Proyectos implements OnInit {
   clienteId: number | null = null;
   estado = 'ACTIVO';
 
+  // Funcionalidad adicional: búsqueda y filtrado
   busqueda = '';
   filtroEstado = '';
 
@@ -58,6 +59,7 @@ export class Proyectos implements OnInit {
     });
   }
 
+  // Getter para filtrar proyectos en tiempo real
   get proyectosFiltrados() {
     return this.proyectos.filter(p => {
       const coincideNombre = p.nombre.toLowerCase().includes(this.busqueda.toLowerCase());
