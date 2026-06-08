@@ -17,7 +17,6 @@ import { Roles } from '../auth/roles.decorator';
 
 @Controller('clientes')
 export class ClientesController {
-
   constructor(
     private readonly clientesService: ClientesService,
   ) {}
@@ -30,23 +29,15 @@ export class ClientesController {
 
   @UseGuards(JwtGuard)
   @Get(':id')
-  findOne(
-    @Param('id') id: string,
-  ) {
+  findOne(@Param('id') id: string) {
     return this.clientesService.findOne(+id);
   }
 
   @UseGuards(JwtGuard, RolesGuard)
   @Roles('ADMIN')
   @Post()
-  create(
-    @Body() body: {
-      nombre: string;
-    },
-  ) {
-    return this.clientesService.create(
-      body.nombre,
-    );
+  create(@Body() body: { nombre: string }) {
+    return this.clientesService.create(body.nombre);
   }
 
   @UseGuards(JwtGuard, RolesGuard)
@@ -54,25 +45,15 @@ export class ClientesController {
   @Patch(':id')
   update(
     @Param('id') id: string,
-    @Body() body: {
-      nombre: string;
-      estado: EstadoCliente;
-    },
+    @Body() body: { nombre: string; estado: EstadoCliente },
   ) {
-    return this.clientesService.update(
-      +id,
-      body.nombre,
-      body.estado,
-    );
+    return this.clientesService.update(+id, body.nombre, body.estado);
   }
 
   @UseGuards(JwtGuard, RolesGuard)
   @Roles('ADMIN')
   @Patch(':id/baja')
-  remove(
-    @Param('id') id: string,
-  ) {
+  remove(@Param('id') id: string) {
     return this.clientesService.remove(+id);
   }
-
 }

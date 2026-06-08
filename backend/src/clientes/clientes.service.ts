@@ -10,12 +10,21 @@ export class ClientesService {
     private repo: Repository<Cliente>,
   ) {}
 
-  findAll(): Promise<Cliente[]> {
-    return this.repo.find();
+  async findAll(): Promise<any[]> {
+    const clientes = await this.repo.find({ relations: ['proyectos'] });
+    return clientes.map(c => ({
+      ...c,
+      cantidadProyectos: c.proyectos.length,
+    }));
   }
 
-  findOne(id: number): Promise<Cliente | null> {
-    return this.repo.findOne({ where: { id } });
+  async findOne(id: number): Promise<any> {
+    const cliente = await this.repo.findOne({ where: { id }, relations: ['proyectos'] });
+    if (!cliente) throw new BadRequestException('Cliente no encontrado');
+    return {
+      ...cliente,
+      cantidadProyectos: cliente.proyectos.length,
+    };
   }
 
   create(nombre: string): Promise<Cliente> {
@@ -24,13 +33,26 @@ export class ClientesService {
   }
 
   async update(id: number, nombre: string, estado: EstadoCliente): Promise<Cliente> {
-    await this.repo.update(id, { nombre, estado });
-    return this.repo.findOne({ where: { id } }) as Promise<Cliente>;
+    const cliente = await this.repo.findOne({ where: { id }, relations: ['proyectos'] });
+    if (!cliente) throw new BadRequestException('Cliente no encontrado');
+
+    if (estado === EstadoCliente.BAJA && cliente.proyectos.length > 0) {
+      throw new BadRequestException('No se puede dar de baja un cliente con proyectos asociados');
+    }
+
+    cliente.nombre = nombre;
+    cliente.estado = estado;
+    return this.repo.save(cliente);
   }
 
   async remove(id: number): Promise<void> {
-    const cliente = await this.repo.findOne({ where: { id } });
+    const cliente = await this.repo.findOne({ where: { id }, relations: ['proyectos'] });
     if (!cliente) throw new BadRequestException('Cliente no encontrado');
+
+    if (cliente.proyectos.length > 0) {
+      throw new BadRequestException('No se puede dar de baja un cliente con proyectos asociados');
+    }
+
     await this.repo.update(id, { estado: EstadoCliente.BAJA });
   }
 }

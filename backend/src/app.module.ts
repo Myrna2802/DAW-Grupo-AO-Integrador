@@ -16,7 +16,7 @@ import { AuthModule } from './auth/auth.module';
       host: 'localhost',
       port: 5432,
       username: 'postgres',
-      password: '4329298',
+      password: '2846',
       database: 'integrador_daw',
       entities: [Usuario, Cliente, Proyecto, Tarea],
       synchronize: false,
