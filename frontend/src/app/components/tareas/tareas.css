@@ -242,6 +242,27 @@
     0 10px 30px rgba(0,0,0,0.04);
 }
 
+.filters-row {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.8rem;
+  margin-bottom: 1rem;
+}
+
+.filter-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #555;
+}
+
+.filter-select {
+  padding: 0.7rem 1rem;
+  border-radius: 12px;
+  border: 1px solid #ddd;
+  font-size: 14px;
+}
+
 table {
   width: 100%;
 
@@ -309,6 +330,23 @@ td {
   background: #f1ecff;
 
   color: #4d2cff;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  cursor: pointer;
+}
+
+.finish-btn {
+  border: none;
+
+  padding: 0.8rem 1rem;
+
+  border-radius: 12px;
+
+  background: #e7f8ec;
+
+  color: #1f8f46;
 
   font-size: 14px;
   font-weight: 600;

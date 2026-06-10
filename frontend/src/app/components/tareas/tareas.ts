@@ -26,6 +26,7 @@ import { AuthService } from '../../services/auth';
 export class Tareas implements OnInit {
 
   tareas: any[] = [];
+  filtroEstado = 'TODOS';
 
   proyectoId: number = 0;
 
@@ -60,6 +61,14 @@ export class Tareas implements OnInit {
     return this.authService.esAdmin()
       || this.authService.esLider();
 
+  }
+
+  get tareasFiltradas(): any[] {
+    if (this.filtroEstado === 'TODOS') {
+      return this.tareas;
+    }
+
+    return this.tareas.filter((tarea) => tarea.estado === this.filtroEstado);
   }
 
   cargarTareas() {
@@ -138,6 +147,20 @@ export class Tareas implements OnInit {
       });
 
     }
+
+  }
+
+  marcarComoFinalizada(tarea: any) {
+
+    if (tarea.estado === 'FINALIZADA') {
+      return;
+    }
+
+    this.api.actualizarTarea(
+      tarea.id,
+      tarea.descripcion,
+      'FINALIZADA'
+    ).subscribe(() => this.cargarTareas());
 
   }
 
